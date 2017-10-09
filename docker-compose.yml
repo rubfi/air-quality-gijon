@@ -1,0 +1,27 @@
+version: "2"
+services:
+    influxdb:
+      image: influxdb:1.3.6
+      container_name: influxdb
+      ports:
+        - "8086:8086"
+      env_file:
+        - ./airquality.env
+
+    grafana:
+      image: grafana/grafana:4.5.2
+      container_name: grafana
+      ports:
+        - "3000:3000"
+      links:
+        - influxdb
+
+    airquality:
+      build: .
+      image: airquality
+      container_name: airquality
+      links:
+        - influxdb
+      env_file:
+        - ./airquality.env
+      command: /airquality/run.sh
